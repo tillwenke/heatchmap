@@ -5,7 +5,8 @@ from matplotlib import pyplot as plt
 import geopandas as gpd
 import pandas as pd
 import numpy as np
-
+import sys
+from tqdm import tqdm
 points = gpd.read_file('/home/till/projects/map/waiting_time_per_point.csv')
 points.wait = points.wait.astype(float)
 points.lat = points.lat.astype(float)
@@ -46,8 +47,8 @@ def makeGaussian(stdv, x0, y0):
     return np.exp(-4*np.log(2) * ((X-x0)**2 + (Y-y0)**2) / fwhm**2)
 
 DENSITY = 10
-x_density = 400 # int(map[2] - map[0]) * DENSITY
-y_density = 100 # int(map[3] - map[1]) * DENSITY
+x_density = int(map[2] - map[0]) * DENSITY
+y_density = int(map[3] - map[1]) * DENSITY
 x = np.linspace(xx[0], xx[2], x_density)
 y = np.linspace(yy[0],yy[2], y_density)
 X, Y = np.meshgrid(x, y)
@@ -59,11 +60,24 @@ def get_dist(lat, lon):
     return makeGaussian(STDV_M, lon, lat)
 
 
-Zn = [
-    get_dist(lat, lon)
-    for lat, lon in zip(points.geometry.y, points.geometry.x)
-]
-Z = np.sum([a*b for a,b in zip(Zn, points.wait)], axis=0) / np.sum(Zn, axis=0)
+# Zn = [
+#     get_dist(lat, lon)
+#     for lat, lon in zip(points.geometry.y, points.geometry.x)
+# ]
+
+Zn = None
+Zn_weighted = None
+
+for lat, lon, wait in tqdm(zip(points.geometry.y, points.geometry.x, points.wait)):
+    Zi = get_dist(lat, lon)
+    if Zn is None:
+        Zn = Zi
+        Zn_weighted = Zi * wait
+    else:
+        Zn = np.sum([Zn, Zi], axis=0)
+        Zn_weighted = np.sum([Zn_weighted, Zi * wait], axis=0)
+
+Z = Zn_weighted / Zn
 from rasterio.transform import from_gcps
 from rasterio.control import GroundControlPoint as GCP
 
@@ -100,15 +114,18 @@ with rasterio.open(
     dtype=Z.dtype,
 ) as dst:
     dst.write(Z, 1)
+
+#countries = gpd.read_file("german_shape/ROR5000.shp")
+
 import matplotlib.colors as colors
 from matplotlib import cm
 
 cmap = colors.ListedColormap(['#008200', '#00c800','#00ff00', '#c8ff00', '#ffff00', '#ffc800', '#ff8200', '#ff0000', '#c80000', '#820000'])
 boundaries = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
 norm = colors.BoundaryNorm(boundaries, cmap.N, clip=True)
+
 countries = gpd.datasets.get_path("naturalearth_lowres")
 countries = gpd.read_file(countries)
-#countries = gpd.read_file("german_shape/ROR5000.shp")
 countries = countries.to_crs(epsg=3857)
 raster = rasterio.open("/home/till/projects/map/map/map.tif")
 fig, ax = plt.subplots(figsize=(100, 100))
