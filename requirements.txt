@@ -34,7 +34,7 @@ nbformat==5.9.2
 nest-asyncio==1.5.8
 networkx==3.1
 numpy==1.26.0
-osmnx==1.2.2
+osmnx==1.7.0
 packaging==23.1
 pandas==2.1.1
 parso==0.8.3
@@ -63,12 +63,13 @@ requests==2.31.0
 rpds-py==0.10.3
 Rtree==1.0.1
 seaborn==0.13.0
-Shapely==1.8.5.post1
+shapely==2.0.2
 six==1.16.0
 snuggs==1.4.7
 stack-data==0.6.2
 tenacity==8.2.3
 tornado==6.3.3
+tqdm==4.66.1
 traitlets==5.10.1
 tzdata==2023.3
 urllib3==2.0.5

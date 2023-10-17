@@ -1,2 +1,6 @@
 env/
 *.tif
+*.csv
+cache/
+roads/
+cities/
