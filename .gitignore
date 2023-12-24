@@ -4,3 +4,8 @@ env/
 cache/
 roads/
 cities/
+
+.vscode
+
+# env
+heatchmap

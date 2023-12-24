@@ -44,7 +44,6 @@ Pillow==10.0.1
 platformdirs==3.10.0
 plotly==5.17.0
 pooch==1.7.0
-prettymaps==1.0.0
 prompt-toolkit==3.0.39
 psutil==5.9.5
 ptyprocess==0.7.0
