@@ -1,6 +1,7 @@
 
 *.tif
 *.png
+*.txt
 cache/
 roads/
 cities/
