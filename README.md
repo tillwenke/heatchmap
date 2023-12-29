@@ -1,6 +1,6 @@
 # heatchmap
 
-`map/map_gpd_rasterio.ipynb` is relevant
+Important: if you are willing to just try it out or contribute reach out to me first this repo needs some cleaning :)
 
 ### Modelling
 
