@@ -1,6 +1,6 @@
-env/
+
 *.tif
-*.csv
+*.png
 cache/
 roads/
 cities/
@@ -8,4 +8,5 @@ cities/
 .vscode
 
 # env
-heatchmap
+env/
+heatchmap/
